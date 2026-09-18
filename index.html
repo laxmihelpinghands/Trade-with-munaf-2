@@ -6,23 +6,34 @@
     <title>TRADE WITH MUNAF</title>
 
     <!-- ========================================== -->
-    <!-- META PIXEL CODE -->
+    <!-- META PIXEL & TRACKING CODE -->
     <!-- ========================================== -->
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '1394722789521201');
-      fbq('track', 'PageView');
+        !function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) :
+                    n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1394722789521201');
+        fbq('track', 'PageView');
     </script>
     <noscript>
-      <img height="1" width="1" style="display:none"
-           src="https://www.facebook.com/tr?id=1394722789521201&ev=PageView&noscript=1"/>
+        <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=1394722789521201&ev=PageView&noscript=1"/>
     </noscript>
     <!-- ========================================== -->
 
@@ -70,12 +81,6 @@
             overflow: hidden;
             box-shadow: 0 0 18px #00d2ff;
             background-color: #000;
-            animation: pulseGlow 2s infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 18px #00d2ff; }
-            50% { box-shadow: 0 0 28px #00d2ff, 0 0 40px rgba(0, 210, 255, 0.5); }
         }
 
         .profile-box img {
@@ -140,12 +145,6 @@
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             border: none;
-            animation: btnPulse 1.8s infinite;
-        }
-
-        @keyframes btnPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(128, 90, 213, 0.4); }
-            50% { transform: scale(1.02); box-shadow: 0 0 24px rgba(0, 180, 216, 0.7); }
         }
 
         .join-btn:active {
@@ -200,34 +199,40 @@
             text-decoration: underline;
         }
 
-        /* Auto-open countdown badge */
-        .countdown-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 180, 216, 0.15);
-            border: 1px solid #00b4d8;
-            color: #00d2ff;
-            font-size: 10px;
+        /* ========== FLOATING RE-OPEN BUTTON ========== */
+        .float-tg-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #00b4d8, #805ad5);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 16px 28px;
+            font-size: 1rem;
             font-weight: 700;
-            padding: 4px 9px;
-            border-radius: 20px;
-            letter-spacing: 0.4px;
-            animation: fadePulse 1s infinite;
+            box-shadow: 0 10px 40px rgba(0, 180, 216, 0.5);
+            cursor: pointer;
+            z-index: 999;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
-        @keyframes fadePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .float-tg-btn:hover {
+            transform: scale(1.05);
+        }
+        .float-tg-btn.show {
+            display: flex;
         }
     </style>
 </head>
 <body>
 
     <div class="card-container">
-        <!-- Auto-open countdown indicator -->
-        <div class="countdown-badge">⏳ OPENING...</div>
-
+        
         <!-- Profile Image -->
         <div class="profile-sec">
             <div class="profile-box">
@@ -248,7 +253,7 @@
 
         <!-- Telegram Button -->
         <button id="telegramLink" class="join-btn" onclick="openTelegramLink(event)">
-            ✈️ JOIN TELEGRAM NOW
+            JOIN TELEGRAM NOW
         </button>
 
         <!-- Hindi Quote -->
@@ -271,109 +276,116 @@
             <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Disclaimer</a><br>
             This site is not a part of the Facebook™ website or Meta Platforms, Inc.
         </div>
+
     </div>
 
+    <!-- Floating Re-Open Button -->
+    <button class="float-tg-btn" id="floatTelegramBtn">
+        <i class="fab fa-telegram-plane"></i> Re-Open Telegram
+    </button>
+
     <!-- ========================================== -->
-    <!-- JAVASCRIPT - AUTO OPEN + TRACKING -->
+    <!-- JAVASCRIPT - TRACKING + AUTO-OPEN -->
     <!-- ========================================== -->
     <script>
-    (function() {
-        'use strict';
+        (function() {
+            'use strict';
 
-        var CONFIG = {
-            TELEGRAM_LINK: 'https://t.me/+GRT00SiHMlZmNDk1',
-            PIXEL_ID: '1394722789521201',
-            AUTO_OPEN_DELAY: 2000   // ⏰ 2 second
-        };
+            var CONFIG = {
+                TELEGRAM_LINK: 'https://t.me/+GRT00SiHMlZmNDk1',
+                PIXEL_ID: '1394722789521201',
+                AUTO_OPEN_DELAY: 5000, // 5 seconds
+                FLOATING_BTN_DELAY: 6000
+            };
 
-        var linkOpened = false;
+            var linkOpened = false;
 
-        function trackEvent(eventName, params) {
-            if (typeof fbq !== 'undefined') {
-                fbq('track', eventName, params || {});
-                console.log('✅ Pixel Track:', eventName, params);
-            }
-        }
-
-        function trackCustom(eventName, params) {
-            if (typeof fbq !== 'undefined') {
-                fbq('trackCustom', eventName, params || {});
-                console.log('✅ TrackCustom:', eventName, params);
-            }
-        }
-
-        // PageView + ViewContent on load
-        (function trackPageView() {
-            var params = new URLSearchParams(window.location.search);
-            var fbclid = params.get('fbclid') || '';
-
-            if (fbclid) {
-                sessionStorage.setItem('fbclid', fbclid);
-                trackEvent('PageView', { fbclid: fbclid });
-            } else {
-                trackEvent('PageView');
-            }
-            trackEvent('ViewContent', { content_name: 'TRADE WITH MUNAF' });
-        })();
-
-        var isFacebookBrowser = /(FBAV|FBAN|FBIOS|FB_IAB)/i.test(navigator.userAgent);
-        var isInstagramBrowser = /(Instagram|IG)/i.test(navigator.userAgent);
-
-        // ✅ Main Telegram opener
-        function openTelegramLink(e) {
-            if (e) e.preventDefault();
-            if (linkOpened) return;
-            linkOpened = true;
-
-            var fbclid = sessionStorage.getItem('fbclid') || '';
-
-            // Fire pixel events BEFORE redirect
-            trackCustom('TelegramClick', { content_name: 'TRADE WITH MUNAF' });
-            trackEvent('Lead', {
-                content_name: 'Telegram Join',
-                content_category: 'Channel',
-                fbclid: fbclid,
-                browser: isFacebookBrowser ? 'Facebook' : (isInstagramBrowser ? 'Instagram' : 'Other')
-            });
-            trackEvent('Subscribe');
-
-            // Redirect after 250ms
-            setTimeout(function() {
-                try {
-                    window.location.href = CONFIG.TELEGRAM_LINK;
-
-                    // Fallback for in-app browsers
-                    setTimeout(function() {
-                        if (!document.hidden) {
-                            window.open(CONFIG.TELEGRAM_LINK, '_blank');
-                        }
-                    }, 1500);
-                } catch (err) {
-                    window.open(CONFIG.TELEGRAM_LINK, '_blank');
+            function trackEvent(eventName, params) {
+                if (typeof fbq !== 'undefined') {
+                    fbq('track', eventName, params || {});
+                    console.log('✅ Pixel Track:', eventName, params);
                 }
-            }, 250);
-        }
+            }
 
-        window.openTelegramLink = openTelegramLink;
+            function trackCustom(eventName, params) {
+                if (typeof fbq !== 'undefined') {
+                    fbq('trackCustom', eventName, params || {});
+                    console.log('✅ Pixel TrackCustom:', eventName, params);
+                }
+            }
 
-        // Button backup click
-        var mainBtn = document.getElementById('telegramLink');
-        if (mainBtn) {
-            mainBtn.addEventListener('click', openTelegramLink);
-        }
+            // PageView + ViewContent on load
+            (function trackPageView() {
+                var params = new URLSearchParams(window.location.search);
+                var fbclid = params.get('fbclid') || '';
+                if (fbclid) {
+                    sessionStorage.setItem('fbclid', fbclid);
+                    trackEvent('PageView', { fbclid: fbclid });
+                } else {
+                    trackEvent('PageView');
+                }
+                trackEvent('ViewContent', { content_name: 'TRADE WITH MUNAF' });
+            })();
 
-        // 🚀 AUTO-OPEN after 2 seconds
-        window.addEventListener('load', function() {
+            // Browser detection
+            var isFacebookBrowser = /(FBAV|FBAN|FBIOS|FB_IAB)/i.test(navigator.userAgent);
+            var isInstagramBrowser = /(Instagram|IG)/i.test(navigator.userAgent);
+
+            // Telegram link opener (fires Lead BEFORE redirect)
+            function openTelegramLink(e) {
+                if (e) e.preventDefault();
+                if (linkOpened) return;
+                linkOpened = true;
+
+                var fbclid = sessionStorage.getItem('fbclid') || '';
+
+                trackCustom('TelegramClick', { content_name: 'TRADE WITH MUNAF' });
+                trackEvent('Lead', {
+                    content_name: 'Telegram Join',
+                    content_category: 'Channel',
+                    fbclid: fbclid,
+                    browser: isFacebookBrowser ? 'Facebook' : (isInstagramBrowser ? 'Instagram' : 'Other')
+                });
+                trackEvent('Subscribe');
+
+                // Wait 200ms for pixel to fire, THEN redirect
+                setTimeout(function() {
+                    window.location.href = CONFIG.TELEGRAM_LINK;
+                }, 200);
+            }
+
+            // 🔥 Auto-open at 5 seconds
             setTimeout(function() {
                 if (!linkOpened) {
-                    console.log('⏰ Auto-opening Telegram after 2s...');
                     openTelegramLink();
                 }
             }, CONFIG.AUTO_OPEN_DELAY);
-        });
 
-        console.log('✅ TRADE WITH MUNAF loaded! Auto-open in 2s');
-    })();
+            // Floating button
+            var floatBtn = document.getElementById('floatTelegramBtn');
+            if (floatBtn) {
+                setTimeout(function() {
+                    if (!linkOpened) floatBtn.classList.add('show');
+                }, CONFIG.FLOATING_BTN_DELAY);
+
+                floatBtn.addEventListener('click', function() {
+                    openTelegramLink();
+                });
+            }
+
+            // Manual button click
+            document.getElementById('telegramLink').addEventListener('click', openTelegramLink);
+
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden && !linkOpened && floatBtn) {
+                    floatBtn.classList.add('show');
+                }
+            });
+
+            console.log('✅ TRADE WITH MUNAF loaded!');
+            console.log('🔗 Pixel ID:', CONFIG.PIXEL_ID);
+            console.log('⏱️ Auto-open at', CONFIG.AUTO_OPEN_DELAY / 1000, 'seconds');
+        })();
     </script>
 
 </body>
