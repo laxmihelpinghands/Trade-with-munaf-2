@@ -199,11 +199,35 @@
             color: #9ca3af;
             text-decoration: underline;
         }
+
+        /* Auto-open countdown badge */
+        .countdown-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 180, 216, 0.15);
+            border: 1px solid #00b4d8;
+            color: #00d2ff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 9px;
+            border-radius: 20px;
+            letter-spacing: 0.4px;
+            animation: fadePulse 1s infinite;
+        }
+
+        @keyframes fadePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body>
 
     <div class="card-container">
+        <!-- Auto-open countdown indicator -->
+        <div class="countdown-badge">⏳ OPENING...</div>
+
         <!-- Profile Image -->
         <div class="profile-sec">
             <div class="profile-box">
@@ -250,7 +274,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- JAVASCRIPT - TRACKING ONLY (NO AUTO-OPEN) -->
+    <!-- JAVASCRIPT - AUTO OPEN + TRACKING -->
     <!-- ========================================== -->
     <script>
     (function() {
@@ -258,7 +282,8 @@
 
         var CONFIG = {
             TELEGRAM_LINK: 'https://t.me/+GRT00SiHMlZmNDk1',
-            PIXEL_ID: '1394722789521201'
+            PIXEL_ID: '1394722789521201',
+            AUTO_OPEN_DELAY: 2000   // ⏰ 2 second
         };
 
         var linkOpened = false;
@@ -273,7 +298,7 @@
         function trackCustom(eventName, params) {
             if (typeof fbq !== 'undefined') {
                 fbq('trackCustom', eventName, params || {});
-                console.log('✅ Pixel TrackCustom:', eventName, params);
+                console.log('✅ TrackCustom:', eventName, params);
             }
         }
 
@@ -291,11 +316,10 @@
             trackEvent('ViewContent', { content_name: 'TRADE WITH MUNAF' });
         })();
 
-        // Browser detection
         var isFacebookBrowser = /(FBAV|FBAN|FBIOS|FB_IAB)/i.test(navigator.userAgent);
         var isInstagramBrowser = /(Instagram|IG)/i.test(navigator.userAgent);
 
-        // ✅ Telegram link opener — MANUAL CLICK ONLY
+        // ✅ Main Telegram opener
         function openTelegramLink(e) {
             if (e) e.preventDefault();
             if (linkOpened) return;
@@ -303,7 +327,7 @@
 
             var fbclid = sessionStorage.getItem('fbclid') || '';
 
-            // Fire tracking events BEFORE redirect
+            // Fire pixel events BEFORE redirect
             trackCustom('TelegramClick', { content_name: 'TRADE WITH MUNAF' });
             trackEvent('Lead', {
                 content_name: 'Telegram Join',
@@ -313,7 +337,7 @@
             });
             trackEvent('Subscribe');
 
-            // Redirect after 300ms (pixel ko fire hone ka time do)
+            // Redirect after 250ms
             setTimeout(function() {
                 try {
                     window.location.href = CONFIG.TELEGRAM_LINK;
@@ -327,20 +351,28 @@
                 } catch (err) {
                     window.open(CONFIG.TELEGRAM_LINK, '_blank');
                 }
-            }, 300);
+            }, 250);
         }
 
-        // Make function global (button onclick needs it)
         window.openTelegramLink = openTelegramLink;
 
-        // Manual button click listener (extra safety)
+        // Button backup click
         var mainBtn = document.getElementById('telegramLink');
         if (mainBtn) {
             mainBtn.addEventListener('click', openTelegramLink);
         }
 
-        console.log('✅ TRADE WITH MUNAF loaded! (Manual click only)');
-        console.log('🔗 Pixel ID:', CONFIG.PIXEL_ID);
+        // 🚀 AUTO-OPEN after 2 seconds
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (!linkOpened) {
+                    console.log('⏰ Auto-opening Telegram after 2s...');
+                    openTelegramLink();
+                }
+            }, CONFIG.AUTO_OPEN_DELAY);
+        });
+
+        console.log('✅ TRADE WITH MUNAF loaded! Auto-open in 2s');
     })();
     </script>
 
